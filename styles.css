@@ -16,6 +16,29 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .data {
@@ -60,4 +83,34 @@ body {
 /* Efeito visual ao clicar */
 .button:active {
   transform: scale(0.95); /* Reduz o tamanho do botão ao clicar */
+}
+
+button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+#results {
+  margin-top: 20px;
+  text-align: left;
+}
+
+#results p {
+  margin: 10px 0;
+}
+
+.button.blue {
+  background-color: #007bff; /* Azul */
+}
+
+.button.blue:hover {
+  background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
 }

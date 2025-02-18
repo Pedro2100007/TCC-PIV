@@ -89,6 +89,11 @@ resistenciaOffButton.addEventListener('click', () => {
     updateField(resistenciaField, 0);
 });
 
+document.getElementById('dadosButton').addEventListener('click', function () {
+    window.location.href = 'dados.html';
+});
+
+
 // Atualiza os dados a cada 5 segundos
 setInterval(fetchData, 5000);
 fetchData(); // Busca os dados imediatamente ao carregar a página

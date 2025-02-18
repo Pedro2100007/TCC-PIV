@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados de Temperatura</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Dados de Temperatura</h1>
+        <form id="timeForm">
+            <label for="startDate">Data Inicial:</label>
+            <input type="datetime-local" id="startDate" required>
+            
+            <label for="endDate">Data Final:</label>
+            <input type="datetime-local" id="endDate" required>
+            
+            <button type="submit" class="button green">Buscar Dados</button>
+        </form>
+
+        <div id="results">
+            <p><strong>Temperatura Média:</strong> <span id="avgTemp">-</span> °C</p>
+            <p><strong>Temperatura Máxima:</strong> <span id="maxTemp">-</span> °C</p>
+            <p><strong>Temperatura Mínima:</strong> <span id="minTemp">-</span> °C</p>
+        </div>
+
+        <!-- Botão Voltar -->
+        <div class="buttons">
+            <button class="button blue" id="voltarButton">Voltar</button>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+</body>
+</html>
