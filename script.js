@@ -1,13 +1,13 @@
 // Configurações do ThingSpeak
-const channelID = '2840207'; // Substitua pelo seu Channel ID
-const readAPIKey = '5UWNQD21RD2A7QHG'; // Substitua pela sua Read API Key
-const writeAPIKey = '9NG6QLIN8UXLE2AH'; // Substitua pela sua Write API Key
+const channelID = '2840207'; // Channel ID
+const readAPIKey = '5UWNQD21RD2A7QHG'; // Read API Key
+const writeAPIKey = '9NG6QLIN8UXLE2AH'; // Write API Key
 const temperatureField = 'field1';
 const levelField = 'field2';
 const bombaField = 'field3';
 const resistenciaField = 'field4';
 
-// Elementos da página principal
+// Elementos da seção de controle manual
 const temperatureElement = document.getElementById('temperature');
 const levelElement = document.getElementById('level');
 const bombaOnButton = document.getElementById('bombaOn');
@@ -15,7 +15,7 @@ const bombaOffButton = document.getElementById('bombaOff');
 const resistenciaOnButton = document.getElementById('resistenciaOn');
 const resistenciaOffButton = document.getElementById('resistenciaOff');
 
-// Variáveis para armazenar os últimos valores válidos
+// Variáveis para armazenar os últimos valores válidos do thingspeak
 let lastValidTemperature = '--';
 let lastValidLevel = '--';
 
@@ -42,6 +42,25 @@ function fetchData() {
                 lastValidLevel = data[levelField];
             }
             levelElement.textContent = lastValidLevel;
+
+            // Atualiza o texto do status da bomba baseado no field3 do thingspeak
+            if (data[bombaField] == 1) {
+                statusBomba.textContent = 'Bomba Ligada'; // Atualiza o texto do status da bomba
+                statusBomba.style.color = 'green'; // Muda a cor do texto para verde
+            } else {
+                statusBomba.textContent = 'Bomba Desligada'; // Atualiza o texto
+                statusBomba.style.color = 'red'; // Muda a cor do texto para vermelho
+            }
+            
+            // Atualiza o texto do status do aquecedor baseado no field4 do thingspeak
+            if (data[resistenciaField] == 1) {
+                statusAquecedor.textContent = 'Aquecedor Ligado'; // Atualiza o texto do status da bomba
+                statusAquecedor.style.color = 'green'; // Muda a cor do texto para verde
+            } else {
+                statusAquecedor.textContent = 'Aquecedor Desligado'; // Atualiza o texto
+                statusAquecedor.style.color = 'red'; // Muda a cor do texto para vermelho
+            }
+
         })
         .catch(error => {
             console.error('Erro ao buscar dados:', error);
@@ -50,6 +69,13 @@ function fetchData() {
             levelElement.textContent = lastValidLevel;
         });
 }
+
+// Atualiza os dados em tempo real a cada 5 segundos
+if (temperatureElement && levelElement) {
+    setInterval(fetchData, 5000);
+    fetchData(); // Busca os dados imediatamente ao carregar a página
+}
+
 
 // Função para atualizar um campo no ThingSpeak
 function updateField(field, value) {
@@ -73,35 +99,65 @@ function updateField(field, value) {
     });
 }
 
-// Event listeners para os botões da página principal
+// Event listeners para os botões do controle manual
 if (bombaOnButton && bombaOffButton && resistenciaOnButton && resistenciaOffButton) {
     bombaOnButton.addEventListener('click', () => {
-        console.log('Ligando bomba...');
-        updateField(bombaField, 1);
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Ligando bomba...');
+            updateField(bombaField, 1);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
     });
 
     bombaOffButton.addEventListener('click', () => {
-        console.log('Desligando bomba...');
-        updateField(bombaField, 0);
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Desligando bomba...');
+            updateField(bombaField, 0);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
     });
 
     resistenciaOnButton.addEventListener('click', () => {
-        console.log('Ligando resistência...');
-        updateField(resistenciaField, 1);
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Ligando resistência...');
+            updateField(resistenciaField, 1);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
     });
 
     resistenciaOffButton.addEventListener('click', () => {
-        console.log('Desligando resistência...');
-        updateField(resistenciaField, 0);
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Desligando resistência...');
+            updateField(resistenciaField, 0);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
     });
 }
 
-// Navegação para a página de dados
-if (document.getElementById('dadosButton')) {
-    document.getElementById('dadosButton').addEventListener('click', function () {
-        window.location.href = 'dados.html';
-    });
+
+// Incluído para o modo automático
+// Função para dados controle automático
+let modoAutomatico = 0; // 0 para desligado, 1 para ligado
+
+function toggleModoAutomatico() {
+    modoAutomatico = modoAutomatico === 0 ? 1 : 0;
+    const botao = document.getElementById('modoAutomatico');
+    botao.textContent = modoAutomatico === 1 ? 'Ligado' : 'Desligado';   
 }
+
+document.getElementById('bombaForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const intervaloLigar = parseInt(document.getElementById('intervaloLigar').value);
+    const tempoDesligar = parseInt(document.getElementById('tempoDesligar').value);
+    const temperaturaAlvo = parseInt(document.getElementById('temperaturaAlvo').value);
+
+});
+
 
 // Função para consultar dados históricos
 if (document.getElementById('timeForm')) {
@@ -169,10 +225,4 @@ if (document.getElementById('timeForm')) {
                 alert('Erro ao buscar dados. Verifique o console para mais detalhes.');
             });
     });
-}
-
-// Atualiza os dados em tempo real a cada 5 segundos
-if (temperatureElement && levelElement) {
-    setInterval(fetchData, 5000);
-    fetchData(); // Busca os dados imediatamente ao carregar a página
 }

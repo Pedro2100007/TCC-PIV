@@ -8,16 +8,22 @@
 </head>
 <body>
     <header>
-        <h1>Projeto Integrador Univesp - PI-V</h1>
+        <h1>Projeto Integrador - PI-V</h1>
     </header>
        
-
+     <!--Seção de indicação dos dados e status bomba / aquecedor-->
         <div class="container">
             <div class="data">
-                <h1>Área principal</h1>
                 <h2>Temperatura: <span id="temperature">--</span> °C</h2>
                 <h2>Nível: <span id="level">--</span> cm</h2>
+                <h2><span id="statusBomba">Status da Bomba</h2>
+                <p id="statusAquecedor">Status do Aquecedor</p>
             </div>
+        </div>
+
+        <!--Seção Controle Manual-->
+        <div class="container">
+            <h2>Controle Manual</h2>
             <div class="buttons">
                 <button class="button green" id="bombaOn">Ligar Bomba</button>
                 <button class="button red" id="bombaOff">Desligar Bomba</button>
@@ -25,12 +31,44 @@
             <div class="buttons">
                 <button class="button green" id="resistenciaOn">Ligar Aquecedor</button>
                 <button class="button red" id="resistenciaOff">Desligar Aquecedor</button>
-          </div>
-            <div class="buttons">
-                <button class="button blue" id="dadosButton">Acessar Dados</button>
             </div>
         </div>
 
+        <!--Seção Controle Automático-->
+        <div class="container">
+            <h2>Controle Automático</h2>
+
+            <form id="bombaForm">
+                <div class="form-group">
+                    <label for="intervaloLigar">Ciclo para ligar bomba (minutos):</label>
+                    <input type="number" id="intervaloLigar" name="intervaloLigar" min="0" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="tempoDesligar">Ciclo para desligar bomba (minutos):</label>
+                    <input type="number" id="tempoDesligar" name="tempoDesligar" min="0" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="temperaturaAlvo">Temperatura alvo (15 a 45 °C):</label>
+                    <input type="number" id="temperaturaAlvo" name="temperaturaAlvo" min="15" max="45" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="modoAutomatico">Modo automático?</label>
+                    <button type="button" id="modoAutomatico" onclick="toggleModoAutomatico()">Desligado</button>
+                </div>
+        
+            </form>
+
+           
+        </div>
+
+        <!--Link para página de dados-->
+
+        <div class="buttons">
+            <button class="button blue" onclick="window.location.href='dados.html'">Acessar Dados</button>
+        </div>
 
     <script src="script.js"></script>
 </body>

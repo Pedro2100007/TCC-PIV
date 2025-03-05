@@ -15,20 +15,20 @@ body {
   .container {
     text-align: center;
     background-color: #fff; /* Fundo branco */
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px; /* Bordas arredondadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     width: 90%;
-    max-width: 500px; /* Largura máxima */
-    margin: 20px 0; /* Espaçamento externo */
+    max-width: 400px; /* Largura máxima */
+    margin: 5px 0; /* Espaçamento externo */
   }
   
   /* Títulos */
   h1 {
-    margin-bottom: 20px; /* Espaçamento abaixo do título */
+    margin-bottom: 10px; /* Espaçamento abaixo */
     color: #333; /* Cor do texto */
   }
-  
+ 
 
   /* Formulários */
   form {
@@ -64,7 +64,7 @@ body {
   .buttons {
     display: flex;
     justify-content: space-around; /* Distribui os botões igualmente */
-    margin-top: 20px; /* Espaçamento acima dos botões */
+    margin-top: 10px; /* Espaçamento acima dos botões */
   }
   
   .button {
@@ -127,3 +127,48 @@ body {
     font-size: 18px; /* Tamanho da fonte */
     color: #333; /* Cor do texto */
   }
+
+
+ /* Incluído para a seção do formulário comando automático */
+  .form-group {
+    display: flex;
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    margin-bottom: 15px;
+}
+
+label {
+    margin-right: 10px; /* Espaço entre o label e o input */
+    width: 250px; /* Largura fixa para os labels */
+    text-align: right; /* Alinha o texto do label à direita */
+}
+
+input, button {
+    padding: 5px;
+    font-size: 14px;
+}
+
+
+#modoAutomatico {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#modoAutomatico:hover {
+    background-color: #ddd;
+}
+
+/* formatação do texto que indica se bomba está ligada ou desligada */
+#statusBomba {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+/* formatação do texto que indica se aquecedor está ligado ou desligado */
+#statusAquecedor {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
