@@ -1,83 +1,180 @@
-// Constantes para acessar o canal e a chave de leitura do ThingSpeak
-const canalId = "2840207";
-const chaveLeitura = "5UWNQD21RD2A7QHG";
+// Configurações do ThingSpeak
+const channelID = '2840207'; // Channel ID
+const readAPIKey = '5UWNQD21RD2A7QHG'; // Read API Key
+const writeAPIKey = '9NG6QLIN8UXLE2AH'; // Write API Key
+const temperatureField = 'field1';
+const levelField = 'field2';
+const bombaField = 'field3';
+const resistenciaField = 'field4';
+const modoAutomaticoField = 'field5';
+const intervaloLigarField = 'field6';
+const tempoDesligarField = 'field7';
+const temperaturaAlvoField = 'field8'; 
 
-// Variável para armazenar a instância do gráfico
-let meuGrafico = null;
 
-// Função para carregar os dados com base nas datas selecionadas
-function carregarDados() {
-    // Obtém as datas de início e fim dos campos de entrada
-    const dataInicio = document.getElementById('dataInicio').value;
-    const dataFim = document.getElementById('dataFim').value;
+// Elementos da seção de controle manual
+const temperatureElement = document.getElementById('temperature');
+const levelElement = document.getElementById('level');
+const bombaOnButton = document.getElementById('bombaOn');
+const bombaOffButton = document.getElementById('bombaOff');
+const resistenciaOnButton = document.getElementById('resistenciaOn');
+const resistenciaOffButton = document.getElementById('resistenciaOff');
 
-    // Verifica se ambas as datas foram selecionadas
-    if (!dataInicio || !dataFim) {
-        alert("Por favor, selecione ambas as datas.");
-        return;
-    }
+// Variáveis para armazenar os últimos valores válidos do thingspeak
+let lastValidTemperature = '--';
+let lastValidLevel = '--';
 
-    // Formata as datas no formato esperado pela API (YYYY-MM-DD)
-    const inicioFormatado = new Date(dataInicio).toISOString().split('T')[0];
-    const fimFormatado = new Date(dataFim).toISOString().split('T')[0];
-
-    // Constrói a URL da API com as datas de início e fim
-    const url = `https://api.thingspeak.com/channels/${canalId}/fields/1.json?api_key=${chaveLeitura}&start=${inicioFormatado}&end=${fimFormatado}`;
-
-    // Faz a requisição à API do ThingSpeak
-    fetch(url)
-        .then(response => response.json()) // Converte a resposta para JSON
+// Função para buscar dados do ThingSpeak em tempo real
+function fetchData() {
+    fetch(`https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${readAPIKey}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição: ' + response.statusText);
+            }
+            return response.json();
+        })
         .then(data => {
-            // Extrai os timestamps (datas) e os valores do field 1
-            const timestamps = data.feeds.map(feed => feed.created_at);
-            const valores = data.feeds.map(feed => parseFloat(feed.field1)); // Converte os valores para números
+            console.log('Dados recebidos:', data); // Log dos dados recebidos
 
-            // Exibe os valores na página
-            const valoresDiv = document.getElementById('valores');
-            valoresDiv.innerHTML = valores.join('<br>');
+            // Atualiza a temperatura se o campo não estiver vazio
+            if (data[temperatureField] && data[temperatureField].trim() !== '') {
+                lastValidTemperature = data[temperatureField];
+            }
+            temperatureElement.textContent = lastValidTemperature;
 
-            // Obtém o contexto do canvas onde o gráfico será renderizado
-            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            // Atualiza o nível se o campo não estiver vazio
+            if (data[levelField] && data[levelField].trim() !== '') {
+                lastValidLevel = data[levelField];
+            }
+            levelElement.textContent = lastValidLevel;
 
-            // Destrói o gráfico anterior, se existir
-            if (meuGrafico) {
-                meuGrafico.destroy();
+            // Atualiza o texto do status da bomba baseado no field3 do thingspeak
+            if (data[bombaField] == 1) {
+                statusBomba.textContent = 'Bomba Ligada'; // Atualiza o texto do status da bomba
+                statusBomba.style.color = 'green'; // Muda a cor do texto para verde
+            } else {
+                statusBomba.textContent = 'Bomba Desligada'; // Atualiza o texto
+                statusBomba.style.color = 'red'; // Muda a cor do texto para vermelho
+            }
+            
+            // Atualiza o texto do status do aquecedor baseado no field4 do thingspeak
+            if (data[resistenciaField] == 1) {
+                statusAquecedor.textContent = 'Aquecedor Ligado'; // Atualiza o texto do status da bomba
+                statusAquecedor.style.color = 'green'; // Muda a cor do texto para verde
+            } else {
+                statusAquecedor.textContent = 'Aquecedor Desligado'; // Atualiza o texto
+                statusAquecedor.style.color = 'red'; // Muda a cor do texto para vermelho
             }
 
-            // Cria um novo gráfico
-            meuGrafico = new Chart(ctx, {
-                type: 'line', // Tipo de gráfico (linha)
-                data: {
-                    labels: timestamps, // Eixo X: timestamps (datas)
-                    datasets: [{
-                        label: 'Temperatura', // Legenda do dataset
-                        data: valores, // Eixo Y: valores do field 1
-                        borderColor: 'blue', // Cor da linha
-                        fill: false // Não preencher a área sob a linha
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'time', // Eixo X é do tipo tempo
-                            time: {
-                                tooltipFormat: 'DD T', // Formato da tooltip (dia e hora)
-                                unit: 'minute' // Unidade de tempo (minuto)
-                            },
-                            title: {
-                                display: true,
-                                text: 'Tempo' // Título do eixo X
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Valor' // Título do eixo Y
-                            }
-                        }
-                    }
-                }
-            });
         })
-        .catch(error => console.error('Erro ao buscar dados:', error)); // Captura e exibe erros
+        .catch(error => {
+            console.error('Erro ao buscar dados:', error);
+            // Mantém os últimos valores válidos em caso de erro
+            temperatureElement.textContent = lastValidTemperature;
+            levelElement.textContent = lastValidLevel;
+        });
 }
+
+// Atualiza os dados em tempo real a cada 5 segundos
+if (temperatureElement && levelElement) {
+    setInterval(fetchData, 5000);
+    fetchData(); // Busca os dados imediatamente ao carregar a página
+}
+
+
+// Função para atualizar um campo no ThingSpeak
+function updateField(field, value) {
+    const url = `https://api.thingspeak.com/update?api_key=${writeAPIKey}&${field}=${value}`;
+    console.log(`Enviando requisição para: ${url}`); // Log da URL de requisição
+
+    fetch(url, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na requisição: ' + response.statusText);
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log(`Campo ${field} atualizado com sucesso. Resposta: ${data}`);
+    })
+    .catch(error => {
+        console.error(`Erro ao atualizar campo ${field}:`, error);
+    });
+}
+
+// Event listeners para os botões do controle manual
+if (bombaOnButton && bombaOffButton && resistenciaOnButton && resistenciaOffButton) {
+    bombaOnButton.addEventListener('click', () => {
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Ligando bomba...');
+            updateField(bombaField, 1);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
+    });
+
+    bombaOffButton.addEventListener('click', () => {
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Desligando bomba...');
+            updateField(bombaField, 0);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
+    });
+
+    resistenciaOnButton.addEventListener('click', () => {
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Ligando resistência...');
+            updateField(resistenciaField, 1);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
+    });
+
+    resistenciaOffButton.addEventListener('click', () => {
+        if (modoAutomatico === 0) { // Verifica se o modo automático está desligado
+            console.log('Desligando resistência...');
+            updateField(resistenciaField, 0);
+        } else {
+            alert('Modo automático está ligado. Desligue o modo automático para controlar manualmente.');
+        }
+    });
+}
+
+
+// Incluído para o modo automático
+// Função para dados controle automático
+let modoAutomatico = 0; // 0 para desligado, 1 para ligado
+
+function toggleModoAutomatico() {
+    modoAutomatico = modoAutomatico === 0 ? 1 : 0;
+    const botao = document.getElementById('modoAutomatico');
+    botao.textContent = modoAutomatico === 1 ? 'Ligado' : 'Desligado';   
+
+    if (modoAutomatico === 1) { // Verifica se o modo automático está ligado
+        // Atualiza os campos 5, 6, 7 e 8 no ThingSpeak
+        //updateField(modoAutomaticoField, 1);
+        updateField(intervaloLigarField, Number(intervaloLigar);
+        updateField(tempoDesligarField, Number(tempoDesligar);
+        updateField(temperaturaAlvoField, Number(temperaturaAlvo);
+    } else {
+        updateField(modoAutomaticoField, 0);
+    }
+
+}
+
+document.getElementById('bombaForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const intervaloLigar = parseInt(document.getElementById('intervaloLigar').value);
+    const tempoDesligar = parseInt(document.getElementById('tempoDesligar').value);
+    const temperaturaAlvo = parseInt(document.getElementById('temperaturaAlvo').value);
+
+
+
+
+});
+
+
