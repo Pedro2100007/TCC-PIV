@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Dados</title>
+    <!-- Inclui o arquivo CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Inclui as bibliotecas Chart.js, Luxon e o adaptador para trabalhar com datas no Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta de Dados por Período</h1>
+        
+        <!-- Campos de entrada para selecionar a data de início e fim -->
+        <div class="input-group">
+            <label for="dataInicio">Data de Início:</label>
+            <input type="date" id="dataInicio">
+            <label for="dataFim">Data de Fim:</label>
+            <input type="date" id="dataFim">
+            <button onclick="carregarDados()">Carregar Dados</button>
+        </div>
+        
+        <!-- Div para exibir os valores do field 1 -->
+        <div id="valores"></div>
+
+        <!-- Canvas onde o gráfico será renderizado -->
+        <canvas id="meuGrafico"></canvas>
+
+    </div>
+
+    <!-- Inclui o arquivo JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
