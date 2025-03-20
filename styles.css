@@ -14,12 +14,12 @@ body {
   /* Container principal */
   .container {
     text-align: center;
-    background-color: #fff; /* Fundo branco */
+    background-color: #ffffff; /* Fundo branco */
     padding: 10px;
     border-radius: 10px; /* Bordas arredondadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     width: 90%;
-    max-width: 400px; /* Largura máxima */
+    max-width: 500px; /* Largura máxima */
     margin: 5px 0; /* Espaçamento externo */
   }
   
@@ -29,7 +29,6 @@ body {
     color: #333; /* Cor do texto */
   }
  
-
   /* Formulários */
   form {
     display: flex;

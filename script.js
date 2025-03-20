@@ -6,6 +6,11 @@ const temperatureField = 'field1';
 const levelField = 'field2';
 const bombaField = 'field3';
 const resistenciaField = 'field4';
+const modoAutomaticoField = 'field5';
+const intervaloLigarField = 'field6';
+const tempoDesligarField = 'field7';
+const temperaturaAlvoField = 'field8'; 
+
 
 // Elementos da seção de controle manual
 const temperatureElement = document.getElementById('temperature');
@@ -147,6 +152,17 @@ function toggleModoAutomatico() {
     modoAutomatico = modoAutomatico === 0 ? 1 : 0;
     const botao = document.getElementById('modoAutomatico');
     botao.textContent = modoAutomatico === 1 ? 'Ligado' : 'Desligado';   
+
+    if (modoAutomatico === 1) { // Verifica se o modo automático está ligado
+        // Atualiza os campos 5, 6, 7 e 8 no ThingSpeak - não está funcionando , implementar botão ou enter para envio individual
+        updateField(modoAutomaticoField, 1);
+        //updateField(intervaloLigarField, Number(intervaloLigar);
+        //updateField(tempoDesligarField, Number(tempoDesligar);
+        //updateField(temperaturaAlvoField, Number(temperaturaAlvo);
+    } else {
+        updateField(modoAutomaticoField, 0);
+    }
+
 }
 
 document.getElementById('bombaForm').addEventListener('submit', function(event) {
@@ -159,70 +175,3 @@ document.getElementById('bombaForm').addEventListener('submit', function(event) 
 });
 
 
-// Função para consultar dados históricos
-if (document.getElementById('timeForm')) {
-    document.getElementById('timeForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Impede o envio padrão do formulário
-
-        // Obtém as datas de início e fim do formulário
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-
-        // Verifica se as datas foram preenchidas
-        if (!startDate || !endDate) {
-            alert('Por favor, preencha ambas as datas.');
-            return;
-        }
-
-        // Converte as datas para o formato UNIX timestamp (segundos)
-        const startUnix = Math.floor(new Date(startDate).getTime() / 1000);
-        const endUnix = Math.floor(new Date(endDate).getTime() / 1000);
-
-        console.log('Data Inicial (Unix):', startUnix); // Log da data inicial
-        console.log('Data Final (Unix):', endUnix); // Log da data final
-
-        // URL da API do ThingSpeak para buscar os feeds no intervalo de datas
-        const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&start=${startUnix}&end=${endUnix}`;
-
-        console.log('URL da API:', url); // Log da URL da API
-
-        // Faz a requisição à API
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na requisição: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Dados recebidos:', data); // Log dos dados recebidos
-
-                const feeds = data.feeds;
-
-                // Verifica se há dados no período selecionado
-                if (feeds.length === 0) {
-                    alert('Nenhum dado encontrado para o período selecionado.');
-                    return;
-                }
-
-                // Extrai as temperaturas (campo field1)
-                const temperatures = feeds.map(feed => parseFloat(feed.field1));
-
-                // Calcula a média, máxima e mínima
-                const avgTemp = (temperatures.reduce((a, b) => a + b, 0) / temperatures.length).toFixed(2);
-                const maxTemp = Math.max(...temperatures).toFixed(2);
-                const minTemp = Math.min(...temperatures).toFixed(2);
-
-                // Exibe os resultados na página
-                document.getElementById('avgTemp').textContent = avgTemp;
-                document.getElementById('maxTemp').textContent = maxTemp;
-                document.getElementById('minTemp').textContent = minTemp;
-
-                console.log('Resultados calculados:', { avgTemp, maxTemp, minTemp }); // Log dos resultados
-            })
-            .catch(error => {
-                console.error('Erro ao buscar dados:', error); // Log de erro
-                alert('Erro ao buscar dados. Verifique o console para mais detalhes.');
-            });
-    });
-}

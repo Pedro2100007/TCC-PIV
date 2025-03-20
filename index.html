@@ -10,7 +10,8 @@
     <header>
         <h1>Projeto Integrador - PI-V</h1>
     </header>
-       
+
+
      <!--Seção de indicação dos dados e status bomba / aquecedor-->
         <div class="container">
             <div class="data">
@@ -25,12 +26,12 @@
         <div class="container">
             <h2>Controle Manual</h2>
             <div class="buttons">
-                <button class="button green" id="bombaOn">Ligar Bomba</button>
-                <button class="button red" id="bombaOff">Desligar Bomba</button>
+                <button class="button green" id="bombaOn" title="Após clicar aguarde 15 segundos para o próximo comando">Ligar Bomba</button>
+                <button class="button red" id="bombaOff" title="Após clicar aguarde 15 segundos para o próximo comando">Desligar Bomba</button>
            </div>
             <div class="buttons">
-                <button class="button green" id="resistenciaOn">Ligar Aquecedor</button>
-                <button class="button red" id="resistenciaOff">Desligar Aquecedor</button>
+                <button class="button green" id="resistenciaOn" title="Após clicar aguarde 15 segundos para o próximo comando">Ligar Aquecedor</button>
+                <button class="button red" id="resistenciaOff" title="Após clicar aguarde 15 segundos para o próximo comando">Desligar Aquecedor</button>
             </div>
         </div>
 
@@ -38,19 +39,20 @@
         <div class="container">
             <h2>Controle Automático</h2>
 
+
             <form id="bombaForm">
                 <div class="form-group">
-                    <label for="intervaloLigar">Ciclo para ligar bomba (minutos):</label>
+                    <label for="intervaloLigar" title="Informe o ciclo de tempo para ligar a bomba ou 0 para modo contínuo.">Ciclo para ligar bomba (minutos):</label>
                     <input type="number" id="intervaloLigar" name="intervaloLigar" min="0" required>
                 </div>
         
                 <div class="form-group">
-                    <label for="tempoDesligar">Ciclo para desligar bomba (minutos):</label>
+                    <label for="tempoDesligar" title="Tempo para desligar a bba após ligada, operacional quando em modo ciclico e não contínuo.">Ciclo para desligar bomba (minutos):</label>
                     <input type="number" id="tempoDesligar" name="tempoDesligar" min="0" required>
                 </div>
         
                 <div class="form-group">
-                    <label for="temperaturaAlvo">Temperatura alvo (15 a 45 °C):</label>
+                    <label for="temperaturaAlvo" title="Indique a temperatura desejada entre 15 e 15°C (verifique o ideal para a sua cultura)">Temperatura alvo (15 a 45 °C):</label>
                     <input type="number" id="temperaturaAlvo" name="temperaturaAlvo" min="15" max="45" required>
                 </div>
         
